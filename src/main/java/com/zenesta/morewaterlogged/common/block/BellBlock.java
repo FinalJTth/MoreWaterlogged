@@ -15,13 +15,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.Nullable;
-// import com.zenesta.morewaterlogged.common.block.entity.BellBlockEntity;
 
-import static com.zenesta.morewaterlogged.common.MoreWaterlogged.BELL_BLOCK_ENTITY_TYPE;
 
 public class BellBlock extends net.minecraft.world.level.block.BellBlock implements SimpleWaterloggedBlock {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -52,7 +49,7 @@ public class BellBlock extends net.minecraft.world.level.block.BellBlock impleme
     }
 
     public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {
-        if ((Boolean)pState.getValue(WATERLOGGED)) {
+        if (pState.getValue(WATERLOGGED)) {
             pLevel.scheduleTick(pCurrentPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
         }
 
@@ -66,6 +63,6 @@ public class BellBlock extends net.minecraft.world.level.block.BellBlock impleme
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
-        return createTickerHelper(pBlockEntityType, BELL_BLOCK_ENTITY_TYPE, pLevel.isClientSide ? BellBlockEntity::clientTick : BellBlockEntity::serverTick);
+        return createTickerHelper(pBlockEntityType, BlockEntityType.BELL, pLevel.isClientSide ? BellBlockEntity::clientTick : BellBlockEntity::serverTick);
     }
 }

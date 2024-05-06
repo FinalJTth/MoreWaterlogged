@@ -4,9 +4,7 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "morewaterlogged.refmap.json",
   "mixins": [
-    "MixinBlockEntityType",
-    "MixinBlocks",
-    "MixinGameData"
+    "MixinBlocks"
   ],
   "client": [
   ],

@@ -1,16 +1,16 @@
 package com.zenesta.morewaterlogged.common.block;
 
 // import com.zenesta.morewaterlogged.common.block.entity.BedBlockEntity;
-import net.minecraft.world.level.block.entity.BedBlockEntity;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
-import net.minecraft.world.level.block.entity.*;
+import net.minecraft.world.level.block.entity.BedBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -19,9 +19,6 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.Overwrite;
-
-import static com.zenesta.morewaterlogged.common.MoreWaterlogged.BELL_BLOCK_ENTITY_TYPE;
 
 public class BedBlock extends net.minecraft.world.level.block.BedBlock implements SimpleWaterloggedBlock {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -52,7 +49,7 @@ public class BedBlock extends net.minecraft.world.level.block.BedBlock implement
     }
 
     public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {
-        if ((Boolean)pState.getValue(WATERLOGGED)) {
+        if (pState.getValue(WATERLOGGED)) {
             pLevel.scheduleTick(pCurrentPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
         }
 

@@ -40,7 +40,7 @@ public class HopperBlock extends net.minecraft.world.level.block.HopperBlock imp
     }
 
     public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {
-        if ((Boolean)pState.getValue(WATERLOGGED)) {
+        if (pState.getValue(WATERLOGGED)) {
             pLevel.scheduleTick(pCurrentPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
         }
 
