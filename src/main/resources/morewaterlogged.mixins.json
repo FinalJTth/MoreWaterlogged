@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "com.zenesta.morewaterlogged.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "morewaterlogged.refmap.json",
+  "mixins": [
+    "MixinBlockEntityType",
+    "MixinBlocks",
+    "MixinGameData"
+  ],
+  "client": [
+  ],
+  "minVersion": "0.8"
+}
