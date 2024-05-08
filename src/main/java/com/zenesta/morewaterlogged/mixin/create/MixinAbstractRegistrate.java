@@ -1,10 +1,8 @@
-package com.zenesta.morewaterlogged.mixin;
+package com.zenesta.morewaterlogged.mixin.create;
 
 import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.builders.BlockBuilder;
-import com.tterrag.registrate.builders.BuilderCallback;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
-import com.zenesta.morewaterlogged.common.block.create.BasinBlock;
 import com.zenesta.morewaterlogged.common.map.CreateConversionMap;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -14,8 +12,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import static com.zenesta.morewaterlogged.common.MoreWaterlogged.LOGGER;
 
 @Mixin(AbstractRegistrate.class)
 public class MixinAbstractRegistrate<S extends AbstractRegistrate<S>> {

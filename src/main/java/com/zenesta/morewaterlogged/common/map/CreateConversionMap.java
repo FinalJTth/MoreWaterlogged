@@ -1,8 +1,9 @@
 package com.zenesta.morewaterlogged.common.map;
 
-import com.simibubi.create.content.kinetics.press.MechanicalPressBlock;
+import com.simibubi.create.content.decoration.slidingDoor.SlidingDoorBlock;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.zenesta.morewaterlogged.common.block.create.*;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
@@ -10,158 +11,136 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class CreateConversionMap extends ConversionMap{
-    public final Map<String, Supplier<NonNullFunction<BlockBehaviour.Properties, Block>>> CONVERSION_MAP = new LinkedHashMap<>();
+public class CreateConversionMap extends ConversionMap {
+    public static final String MOD_ID = "create";
+    public final Map<String, Supplier<NonNullFunction<BlockBehaviour.Properties, Block>>> conversionMap = new LinkedHashMap<>();
 
     public CreateConversionMap() {
         initialize();
     }
 
+    @SuppressWarnings("unchecked")
     public void initialize() {
-        /*
-        Supplier<BlockEntry<?>> basin = () -> Create.REGISTRATE.block("basin", BasinBlock::new)
-                .initialProperties(SharedProperties::stone).properties((p) -> {
-                    return p.mapColor(MapColor.COLOR_GRAY).sound(SoundType.NETHERITE_BLOCK);
-                })
-                .transform(TagGen.pickaxeOnly()).blockstate(new BasinGenerator()::generate)
-                .addLayer(() -> {
-                    return RenderType::cutoutMipped;
-                })
-                .onRegister(AllMovementBehaviours.movementBehaviour(new BasinMovementBehaviour())).item()
-                .transform(ModelGen.customItemModel(new String[]{"_", "block"}))
-                .register();
+        // Processing
+        conversionMap.put("basin", () -> BasinBlock::new);
+        conversionMap.put("crushing_wheel", () -> CrushingWheelBlock::new);
+        conversionMap.put("mechanical_mixer", () -> MechanicalMixerBlock::new);
+        conversionMap.put("mechanical_press", () -> MechanicalPressBlock::new);
+        conversionMap.put("millstone", () -> MillstoneBlock::new);
+        conversionMap.put("blaze_burner", () -> BlazeBurnerBlock::new);
 
-        Supplier<BlockEntry<?>> crushingWheel = () -> Create.REGISTRATE.block("crushing_wheel", CrushingWheelBlock::new)
-                .properties((p) -> {
-                    return p.mapColor(MapColor.METAL);
-                }).initialProperties(SharedProperties::stone).properties(BlockBehaviour.Properties::noOcclusion)
-                .transform(TagGen.pickaxeOnly()).blockstate((c, p) -> {
-                    BlockStateGen.axisBlock(c, p, (s) -> {
-                        return AssetLookup.partialBaseModel(c, p, new String[0]);
-                    });
-                }).addLayer(() -> {
-                    return RenderType::cutoutMipped;
-                }).transform(BlockStressDefaults.setImpact(8.0)).item()
-                .transform(ModelGen.customItemModel())
-                .register();
+        // Kinetic
+        conversionMap.put("creative_motor", () -> CreativeMotorBlock::new);
 
-        Supplier<BlockEntry<?>> mechanicalMixer = () -> Create.REGISTRATE.block("mechanical_mixer", MechanicalMixerBlock::new)
-                .initialProperties(SharedProperties::stone).properties((p) -> {
-                    return p.noOcclusion().mapColor(MapColor.STONE);
-                }).transform(TagGen.axeOrPickaxe()).blockstate((c, p) -> {
-                    p.simpleBlock(c.getEntry(), AssetLookup.partialBaseModel(c, p));
-                }).addLayer(() -> {
-                    return RenderType::cutoutMipped;
-                })
-                .transform(BlockStressDefaults.setImpact(4.0)).item(AssemblyOperatorBlockItem::new)
-                .transform(ModelGen.customItemModel())
-                .register();
+        conversionMap.put("adjustable_chain_gearshift", () -> ChainGearshiftBlock::new);
+        conversionMap.put("clutch", () -> ClutchBlock::new);
+        conversionMap.put("encased_chain_drive", () -> ChainDriveBlock::new);
+        conversionMap.put("gearbox", () -> GearboxBlock::new);
+        conversionMap.put("gearshift", () -> GearshiftBlock::new);
+        conversionMap.put("sequenced_gearshift", () -> SequencedGearshiftBlock::new);
 
-        Supplier<BlockEntry<?>> mechanicalPress = () -> Create.REGISTRATE.block("mechanical_press", MechanicalPressBlock::new)
-                .initialProperties(SharedProperties::stone).properties((p) -> {
-                    return p.noOcclusion().mapColor(MapColor.PODZOL);
-                })
-                .transform(TagGen.axeOrPickaxe())
-                .blockstate(BlockStateGen.horizontalBlockProvider(true))
-                .transform(BlockStressDefaults.setImpact(8.0)).item(AssemblyOperatorBlockItem::new)
-                .transform(ModelGen.customItemModel())
-                .register();
+        conversionMap.put("encased_fan", () -> EncasedFanBlock::new);
+        conversionMap.put("turntable", () -> TurntableBlock::new);
 
-        Supplier<BlockEntry<?>> chainGearshift = () -> Create.REGISTRATE.block("adjustable_chain_gearshift", ChainGearshiftBlock::new)
-                .initialProperties(SharedProperties::stone).properties((p) -> {
-                    return p.noOcclusion().mapColor(MapColor.NETHER);
-                }).transform(BlockStressDefaults.setNoImpact())
-                .transform(TagGen.axeOrPickaxe()).blockstate((c, p) -> {
-                    (new ChainDriveGenerator((state, suffix) -> {
-                        String powered = (Boolean)state.getValue(ChainGearshiftBlock.POWERED) ? "_powered" : "";
-                        BlockModelBuilder var10000 = (BlockModelBuilder)p.models().withExistingParent(c.getName() + "_" + suffix + powered, p.modLoc("block/encased_chain_drive/" + suffix));
-                        String var10003 = c.getName();
-                        return var10000.texture("side", p.modLoc("block/" + var10003 + powered));
-                    })).generate(c, p);
-                }).item().model((c, p) -> {
-                    ((ItemModelBuilder)p.withExistingParent(c.getName(), p.modLoc("block/encased_chain_drive/item"))).texture("side", p.modLoc("block/" + c.getName()));
-                }).build()
-                .register();
+        conversionMap.put("speedometer", () -> GaugeBlock::speed);
+        conversionMap.put("stressometer", () -> GaugeBlock::stress);
 
-        Supplier<BlockEntry<?>> clutch = () -> Create.REGISTRATE.block("clutch", ClutchBlock::new)
-                .initialProperties(SharedProperties::stone).properties((p) -> {
-                    return p.noOcclusion().mapColor(MapColor.PODZOL);
-                }).addLayer(() -> {
-                    return RenderType::cutoutMipped;
-                }).transform(BlockStressDefaults.setNoImpact())
-                .transform(TagGen.axeOrPickaxe()).blockstate((c, p) -> {
-                    BlockStateGen.axisBlock(c, p, AssetLookup.forPowered(c, p));
-                }).item()
-                .transform(ModelGen.customItemModel())
-                .register();
+        conversionMap.put("cuckoo_clock", () -> CuckooClockBlock::regular);
+        conversionMap.put("mysterious_cuckoo_clock", () -> CuckooClockBlock::mysterious);
 
-        Supplier<BlockEntry<?>> encased_chain_drive = () -> Create.REGISTRATE.block("encased_chain_drive", ChainDriveBlock::new)
-                .initialProperties(SharedProperties::stone).properties((p) -> {
-                    return p.noOcclusion().mapColor(MapColor.PODZOL);
-                }).transform(BlockStressDefaults.setNoImpact())
-                .transform(TagGen.axeOrPickaxe()).blockstate((c, p) -> {
-                    (new ChainDriveGenerator((state, suffix) -> {
-                        BlockModelProvider var10000 = p.models();
-                        String var10002 = c.getName();
-                        return var10000.getExistingFile(p.modLoc("block/" + var10002 + "/" + suffix));
-                    })).generate(c, p);
-                }).item()
-                .transform(ModelGen.customItemModel())
-                .register();
+        conversionMap.put("gantry_shaft", () -> GantryShaftBlock::new);
 
-        Supplier<BlockEntry<?>> gearbox = () -> Create.REGISTRATE.block("gearbox", GearboxBlock::new)
-                .initialProperties(SharedProperties::stone).properties((p) -> {
-                    return p.noOcclusion().mapColor(MapColor.PODZOL);
-                }).transform(BlockStressDefaults.setNoImpact()).transform(TagGen.axeOrPickaxe())
-                .onRegister(CreateRegistrate.connectedTextures(() -> {
-                    return new EncasedCTBehaviour(AllSpriteShifts.ANDESITE_CASING);
-                }))
-                .onRegister(CreateRegistrate.casingConnectivity((block, cc) -> {
-                    cc.make(block, AllSpriteShifts.ANDESITE_CASING, (s, f) -> {
-                        return f.getAxis() == s.getValue(GearboxBlock.AXIS);
-                    });
-                }))
-                .blockstate((c, p) -> {
-                    BlockStateGen.axisBlock(c, p, ($) -> {
-                        return AssetLookup.partialBaseModel(c, p, new String[0]);
-                    }, true);
-                }).item()
-                .transform(ModelGen.customItemModel())
-                .register();
+        conversionMap.put("mechanical_saw", () -> SawBlock::new);
 
-        Supplier<BlockEntry<?>> gearshift = () -> Create.REGISTRATE.block("gearshift", GearshiftBlock::new)
-                .initialProperties(SharedProperties::stone).properties((p) -> {
-                    return p.noOcclusion().mapColor(MapColor.PODZOL);
-                }).addLayer(() -> {
-                    return RenderType::cutoutMipped;
-                })
-                .transform(BlockStressDefaults.setNoImpact())
-                .transform(TagGen.axeOrPickaxe()).blockstate((c, p) -> {
-                    BlockStateGen.axisBlock(c, p, AssetLookup.forPowered(c, p));
-                }).item()
-                .transform(ModelGen.customItemModel()).register();
-         */
+        conversionMap.put("deployer", () -> DeployerBlock::new);
 
-        CONVERSION_MAP.put("basin", () -> BasinBlock::new);
-        CONVERSION_MAP.put("crushing_wheel", () -> CrushingWheelBlock::new);
-        CONVERSION_MAP.put("mechanical_mixer", () -> MechanicalMixerBlock::new);
-        CONVERSION_MAP.put("mechanical_press", () -> MechanicalPressBlock::new);
-        CONVERSION_MAP.put("millstone", () -> MillstoneBlock::new);
-        CONVERSION_MAP.put("blaze_burner", () -> BlazeBurnerBlock::new);
-        CONVERSION_MAP.put("adjustable_chain_gearshift", () -> ChainGearshiftBlock::new);
-        CONVERSION_MAP.put("clutch", () -> ClutchBlock::new);
-        CONVERSION_MAP.put("encased_chain_drive", () -> ChainDriveBlock::new);
-        CONVERSION_MAP.put("gearbox", () -> GearboxBlock::new);
-        CONVERSION_MAP.put("gearshift", () -> GearshiftBlock::new);
-        CONVERSION_MAP.put("water_wheel", () -> WaterWheelBlock::new);
-        CONVERSION_MAP.put("large_water_wheel", () -> LargeWaterWheelBlock::new);
+        conversionMap.put("mechanical_crafter", () -> MechanicalCrafterBlock::new);
+
+        conversionMap.put("flywheel", () -> FlywheelBlock::new);
+
+        conversionMap.put("rotation_speed_controller", () -> SpeedControllerBlock::new);
+
+        conversionMap.put("mechanical_arm", () -> ArmBlock::new);
+
+        // Logistic
+        conversionMap.put("smart_chute", () -> SmartChuteBlock::new);
+
+        conversionMap.put("creative_crate", () -> CreativeCrateBlock::new);
+
+        // Fluid
+        conversionMap.put("fluid_tank", () -> FluidTankBlock::regular);
+        conversionMap.put("creative_fluid_tank", () -> FluidTankBlock::creative);
+
+        conversionMap.put("hose_pulley", () -> HosePulleyBlock::new);
+        conversionMap.put("item_drain", () -> ItemDrainBlock::new);
+        conversionMap.put("spout", () -> SpoutBlock::new);
+
+        // Contraptions
+        conversionMap.put("mechanical_piston", () -> MechanicalPistonBlock::normal);
+        conversionMap.put("sticky_mechanical_piston", () -> MechanicalPistonBlock::sticky);
+
+        conversionMap.put("gantry_carriage", () -> GantryCarriageBlock::new);
+
+        conversionMap.put("mechanical_bearing", () -> MechanicalBearingBlock::new);
+        conversionMap.put("clockwork_bearing", () -> MechanicalBearingBlock::new);
+
+        conversionMap.put("rope_pulley", () -> PulleyBlock::new);
+        conversionMap.put("elevator_pulley", () -> ElevatorPulleyBlock::new);
+        conversionMap.put("elevator_contact", () -> ElevatorContactBlock::new);
+
+        conversionMap.put("sticker", () -> StickerBlock::new);
+
+        // Stress Generator
+        conversionMap.put("water_wheel", () -> WaterWheelBlock::new);
+        conversionMap.put("large_water_wheel", () -> LargeWaterWheelBlock::new);
+        conversionMap.put("water_wheel_structure", () -> WaterWheelStructuralBlock::new);
+
+        conversionMap.put("windmill_bearing", () -> WindmillBearingBlock::new);
+        conversionMap.put("sail_frame", () -> SailBlock::frame);
+        for (DyeColor colour : DyeColor.values())
+            conversionMap.put(colour.getSerializedName() + "_sail", () -> (properties) -> SailBlock.withCanvas(properties, colour));
+
+        // Redstone
+        conversionMap.put("redstone_contact", () -> RedstoneContactBlock::new);
+        conversionMap.put("content_observer", () -> SmartObserverBlock::new);
+        conversionMap.put("stockpile_switch", () -> ThresholdSwitchBlock::new);
+        conversionMap.put("display_link", () -> DisplayLinkBlock::new);
+        conversionMap.put("redstone_link", () -> RedstoneLinkBlock::new);
+
+        // Equipment
+        conversionMap.put("peculiar_bell", () -> PeculiarBellBlock::new);
+        conversionMap.put("haunted_bell", () -> HauntedBellBlock::new);
+
+        // Decoration
+        conversionMap.put("steam_whistle", () -> WhistleBlock::new);
+        conversionMap.put("steam_whistle_extension", () -> WhistleExtenderBlock::new);
+
+        conversionMap.put("andesite_door", () -> (properties) -> SlidingDoorBlock.metal(properties, true));
+        conversionMap.put("brass_door", () -> (properties) -> SlidingDoorBlock.metal(properties, false));
+        conversionMap.put("copper_door", () -> (properties) -> SlidingDoorBlock.metal(properties, true));
+        conversionMap.put("train_door", () -> (properties) -> SlidingDoorBlock.metal(properties, false));
+        conversionMap.put("framed_glass_door", () -> (properties) -> SlidingDoorBlock.glass(properties, false));
+
+        if (!CONFIG_MAP.containsKey(MOD_ID)) {
+            CONFIG_MAP.put(MOD_ID, new LinkedHashMap<>());
+        }
+        for (String key : conversionMap.keySet()) {
+            if (!CONFIG_MAP.get(MOD_ID).containsKey(key)) {
+                MARKED_FOR_CONFIG_CREATION.set(true);
+                CONFIG_MAP.get(MOD_ID).put(key, true);
+            }
+        }
+
+        HAS_INITIALIZED_LIST.add(true);
     }
 
     @SuppressWarnings("unchecked")
     public <T extends Block> NonNullFunction<BlockBehaviour.Properties, T> convert(String key, NonNullFunction<BlockBehaviour.Properties, T> factory) {
-        if (CONVERSION_MAP.containsKey(key)) {
-            log(key);
-            return (NonNullFunction<BlockBehaviour.Properties, T>) CONVERSION_MAP.get(key).get();
+        if (conversionMap.containsKey(key)) {
+            log(key, MOD_ID);
+            if (isKeyEnabled(key, MOD_ID)) {
+                return (NonNullFunction<BlockBehaviour.Properties, T>) conversionMap.get(key).get();
+            }
         }
         return factory;
     }

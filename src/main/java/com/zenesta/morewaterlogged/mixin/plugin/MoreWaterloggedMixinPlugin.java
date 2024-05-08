@@ -15,7 +15,8 @@ public class MoreWaterloggedMixinPlugin implements IMixinConfigPlugin {
     private static final Supplier<Boolean> TRUE = () -> true;
 
     private static final Map<String, Supplier<Boolean>> CONDITIONS = ImmutableMap.of(
-            "com.zenesta.morewaterlogged.mixin.MixinCreateAllBlocks", () -> LoadingModList.get().getModFileById("create") != null
+            "com.zenesta.morewaterlogged.mixin.create.MixinCreateAllBlocks", () -> LoadingModList.get().getModFileById("create") != null,
+            "com.zenesta.morewaterlogged.mixin.apotheosis.MixinApotheosisEnchModule", () -> LoadingModList.get().getModFileById("apotheosis") != null
     );
 
     @Override

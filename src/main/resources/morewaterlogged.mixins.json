@@ -5,9 +5,9 @@
   "refmap": "morewaterlogged.refmap.json",
   "target": "@env(DEFAULT)",
   "mixins": [
-    "MixinBlocks",
-    "MixinCreateAllBlocks",
-    "MixinAbstractRegistrate"
+    "create.MixinAbstractRegistrate",
+    "apotheosis.MixinApotheosisEnchModule",
+    "MixinBlocks"
   ],
   "plugin": "com.zenesta.morewaterlogged.mixin.plugin.MoreWaterloggedMixinPlugin",
   "client": [
