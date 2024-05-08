@@ -3,10 +3,13 @@
   "package": "com.zenesta.morewaterlogged.mixin",
   "compatibilityLevel": "JAVA_17",
   "refmap": "morewaterlogged.refmap.json",
+  "target": "@env(DEFAULT)",
   "mixins": [
     "MixinBlocks",
-    "MixinCreateAllBlocks"
+    "MixinCreateAllBlocks",
+    "MixinAbstractRegistrate"
   ],
+  "plugin": "com.zenesta.morewaterlogged.mixin.plugin.MoreWaterloggedMixinPlugin",
   "client": [
   ],
   "minVersion": "0.8"

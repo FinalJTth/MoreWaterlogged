@@ -1,18 +1,12 @@
 package com.zenesta.morewaterlogged.common;
 
-import com.zenesta.morewaterlogged.common.block.MechanicalPressBlock;
-import net.minecraft.client.ClientBrandRetriever;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Rarity;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.MapColor;
+import com.simibubi.create.Create;
+import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.internal.BrandingControl;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.fml.loading.LoadingModList;
 import net.minecraftforge.registries.RegisterEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,13 +20,22 @@ public class MoreWaterlogged {
     public static class CommonModEvents {
         @SubscribeEvent
         public static void commonSetup(final FMLCommonSetupEvent event) {
+            LOGGER.debug("Displaying Mod List ...");
+            for (String modname : ForgeHooks.getModPacks()) {
+                LOGGER.debug("Mod : {}", modname);
+            }
+            for (String modname : ForgeHooks.getModPacksWithVanilla()) {
+                LOGGER.debug("ModVanilla : {}", modname);
+            }
             // ModNe
         }
 
         @SubscribeEvent
         public static void register(final RegisterEvent event) {
-            BlockBehaviour.Properties mechanicalPressProps = BlockBehaviour.Properties.of()..noOcclusion().mapColor(MapColor.PODZOL)
-            event.register(ForgeRegistries.Keys.BLOCKS, (helper) -> helper.register(new ResourceLocation("create", "mechanical_press"), new MechanicalPressBlock()));
+            /*
+            BlockBehaviour.Properties mechanicalPressProps = BlockBehaviour.Properties.of().noOcclusion().mapColor(MapColor.PODZOL);
+            event.register(ForgeRegistries.Keys.BLOCKS, (helper) -> helper.register(new ResourceLocation("create", "mechanical_press"), new MechanicalPressBlock(mechanicalPressProps)));
+            */
         }
     }
 }

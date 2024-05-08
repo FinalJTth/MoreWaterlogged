@@ -1,6 +1,6 @@
 package com.zenesta.morewaterlogged.mixin;
 
-import com.zenesta.morewaterlogged.common.map.ConversionMap;
+import com.zenesta.morewaterlogged.common.map.MinecraftConversionMap;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.Block;
@@ -16,7 +16,7 @@ public class MixinBlocks {
      */
     @Overwrite
     public static Block register(String pKey, Block pBlock) {
-        final ConversionMap map = new ConversionMap();
-        return Registry.register(BuiltInRegistries.BLOCK, pKey, map.parse(pKey, pBlock));
+        final MinecraftConversionMap map = new MinecraftConversionMap();
+        return Registry.register(BuiltInRegistries.BLOCK, pKey, map.convert(pKey, pBlock));
     }
 }
