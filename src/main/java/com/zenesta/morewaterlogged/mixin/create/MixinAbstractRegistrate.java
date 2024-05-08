@@ -20,7 +20,8 @@ public class MixinAbstractRegistrate<S extends AbstractRegistrate<S>> {
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void constructorHead(CallbackInfo ci) {
-        moreWaterlogged$map = new CreateConversionMap();
+        if (!CreateConversionMap.hasInitialized)
+            CreateConversionMap.initialize();
     }
 
     /**
@@ -29,7 +30,7 @@ public class MixinAbstractRegistrate<S extends AbstractRegistrate<S>> {
      */
     @SuppressWarnings("unchecked") @Overwrite(remap = false)
     public <T extends Block, P> BlockBuilder<T, P> block(P parent, String name, NonNullFunction<BlockBehaviour.Properties, T> factory) {
-        return ((AbstractRegistrate<?>)(Object)this).entry(name, callback -> BlockBuilder.create((AbstractRegistrate<?>)(Object)this, parent, name, callback, moreWaterlogged$map.convert(name, factory)));
+        return ((AbstractRegistrate<?>)(Object)this).entry(name, callback -> BlockBuilder.create((AbstractRegistrate<?>)(Object)this, parent, name, callback, CreateConversionMap.convert(name, factory)));
     }
     /*
     @Shadow

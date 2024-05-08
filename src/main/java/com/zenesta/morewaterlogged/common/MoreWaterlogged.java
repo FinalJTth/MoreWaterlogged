@@ -1,6 +1,8 @@
 package com.zenesta.morewaterlogged.common;
 
 import com.zenesta.morewaterlogged.common.config.ConvertConfig;
+import com.zenesta.morewaterlogged.common.map.CreateConversionMap;
+import com.zenesta.morewaterlogged.common.map.MinecraftConversionMap;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
