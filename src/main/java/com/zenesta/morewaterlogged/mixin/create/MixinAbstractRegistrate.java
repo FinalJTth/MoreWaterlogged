@@ -33,7 +33,6 @@ public class MixinAbstractRegistrate<S extends AbstractRegistrate<S>> {
      */
     @SuppressWarnings("unchecked") @Overwrite(remap = false)
     public <T extends Block, P> BlockBuilder<T, P> block(P parent, String name, NonNullFunction<BlockBehaviour.Properties, T> factory) {
-        LOGGER.debug("Block : {}", name);
         return ((AbstractRegistrate<?>)(Object)this).entry(name, callback -> BlockBuilder.create((AbstractRegistrate<?>)(Object)this, parent, name, callback, moreWaterlogged$map.convert(name, factory)));
     }
     /*
