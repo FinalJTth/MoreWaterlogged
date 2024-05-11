@@ -1,9 +1,12 @@
-package com.zenesta.morewaterlogged.mixin.create;
+package com.zenesta.morewaterlogged.mixin.registrate;
 
+import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
+import com.zenesta.morewaterlogged.common.MoreWaterlogged;
 import com.zenesta.morewaterlogged.common.map.CreateConversionMap;
+import com.zenesta.morewaterlogged.common.map.CreateNewAgeConversionMap;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,15 +16,19 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import static com.zenesta.morewaterlogged.common.MoreWaterlogged.LOGGER;
+
 @Mixin(AbstractRegistrate.class)
 public class MixinAbstractRegistrate<S extends AbstractRegistrate<S>> {
     @Unique
     private static CreateConversionMap moreWaterlogged$map;
 
-    @Inject(method = "<init>", at = @At("TAIL"))
-    private void constructorHead(CallbackInfo ci) {
-        if (!CreateConversionMap.hasInitialized)
-            CreateConversionMap.initialize();
+    @Inject(method = "<clinit>", at = @At("HEAD"))
+    private static void staticHead(CallbackInfo ci) {
+        if (CreateConversionMap.instance == null)
+            new CreateConversionMap();
+        if (CreateNewAgeConversionMap.instance == null)
+            new CreateNewAgeConversionMap();
     }
 
     /**
@@ -30,7 +37,15 @@ public class MixinAbstractRegistrate<S extends AbstractRegistrate<S>> {
      */
     @SuppressWarnings("unchecked") @Overwrite(remap = false)
     public <T extends Block, P> BlockBuilder<T, P> block(P parent, String name, NonNullFunction<BlockBehaviour.Properties, T> factory) {
-        return ((AbstractRegistrate<?>)(Object)this).entry(name, callback -> BlockBuilder.create((AbstractRegistrate<?>)(Object)this, parent, name, callback, CreateConversionMap.convert(name, factory)));
+        if (parent instanceof CreateRegistrate registrate) {
+            LOGGER.debug("MODNAME : {}", registrate.getModid());
+            if (registrate.getModid().equals(MoreWaterlogged.CREATE_MOD_ID))
+                factory = CreateConversionMap.instance.convert(name, factory);
+            else if (registrate.getModid().equals(MoreWaterlogged.CREATE_NEW_AGE_MOD_ID))
+                factory = CreateNewAgeConversionMap.instance.convert(name, factory);
+        }
+        NonNullFunction<BlockBehaviour.Properties, T> finalFactory = factory;
+        return ((AbstractRegistrate<?>)(Object)this).entry(name, callback -> BlockBuilder.create((AbstractRegistrate<?>)(Object)this, parent, name, callback, finalFactory));
     }
     /*
     @Shadow

@@ -1,7 +1,9 @@
 package com.zenesta.morewaterlogged.common;
 
 import com.zenesta.morewaterlogged.common.config.ConvertConfig;
+import com.zenesta.morewaterlogged.common.map.AlchemistryConversionMap;
 import com.zenesta.morewaterlogged.common.map.CreateConversionMap;
+import com.zenesta.morewaterlogged.common.map.CreateNewAgeConversionMap;
 import com.zenesta.morewaterlogged.common.map.MinecraftConversionMap;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -20,7 +22,13 @@ public class MoreWaterlogged {
     public static final String MOD_ID = "morewaterlogged";
     public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
-    public static final List<String> SUPPORTED_MODS = List.of("minecraft", "create");
+    public static final String MINECRAFT_MOD_ID = "minecraft";
+    public static final String CREATE_MOD_ID = "create";
+    public static final String CREATE_NEW_AGE_MOD_ID = "create_new_age";
+    public static final String ALCHEMISTRY_MOD_ID = "alchemistry";
+
+    public static final List<String> SUPPORTED_MODS = List.of(MINECRAFT_MOD_ID, CREATE_MOD_ID, CREATE_NEW_AGE_MOD_ID,
+            ALCHEMISTRY_MOD_ID);
     public static final List<String> INSTALLED_SUPPORTED_MODS = new ArrayList<>();
 
     public MoreWaterlogged() {

@@ -1,6 +1,8 @@
 package com.zenesta.morewaterlogged.common.map;
 
 import com.google.common.collect.ImmutableMap;
+import com.tterrag.registrate.util.nullness.NonNullFunction;
+import com.zenesta.morewaterlogged.common.MoreWaterlogged;
 import com.zenesta.morewaterlogged.common.block.minecraft.*;
 import com.zenesta.morewaterlogged.common.block.minecraft.compat.ApothAnvilBlock;
 import com.zenesta.morewaterlogged.common.block.minecraft.compat.ApothEnchantBlock;
@@ -27,206 +29,205 @@ import static net.minecraft.world.level.block.Blocks.*;
 
 import static com.zenesta.morewaterlogged.common.MoreWaterlogged.LOGGER;
 
+@SuppressWarnings("deprecation")
 public class MinecraftConversionMap extends ConversionMap {
-    public static final String MOD_ID = "minecraft";
-    public static final Map<String, Supplier<Block>> CONVERSION_MAP = new LinkedHashMap<>();
-    public static boolean hasInitialized = false;
+    public static MinecraftConversionMap instance = null;
 
-    private static final Map<BlockSetType, Supplier<Block>> MAP_MATERIAL = ImmutableMap.of(BlockSetType.OAK, () -> OAK_PLANKS, BlockSetType.SPRUCE, () -> SPRUCE_PLANKS,
+    private final Map<BlockSetType, Supplier<Block>> mapMaterial = ImmutableMap.of(BlockSetType.OAK, () -> OAK_PLANKS, BlockSetType.SPRUCE, () -> SPRUCE_PLANKS,
             BlockSetType.BIRCH, () -> BIRCH_PLANKS, BlockSetType.JUNGLE, () -> JUNGLE_PLANKS, BlockSetType.ACACIA, () -> ACACIA_PLANKS, BlockSetType.CHERRY, () -> CHERRY_PLANKS,
             BlockSetType.DARK_OAK, () -> DARK_OAK_PLANKS, BlockSetType.MANGROVE, () -> MANGROVE_PLANKS, BlockSetType.BAMBOO, () -> BAMBOO_PLANKS);
 
-    public static void initialize() {
-        hasInitialized = true;
-        CONVERSION_MAP.put("white_bed", () -> bed(DyeColor.WHITE));
-        CONVERSION_MAP.put("orange_bed", () -> bed(DyeColor.ORANGE));
-        CONVERSION_MAP.put("magenta_bed", () -> bed(DyeColor.MAGENTA));
-        CONVERSION_MAP.put("light_blue_bed", () -> bed(DyeColor.LIGHT_BLUE));
-        CONVERSION_MAP.put("yellow_bed", () -> bed(DyeColor.YELLOW));
-        CONVERSION_MAP.put("lime_bed", () -> bed(DyeColor.LIME));
-        CONVERSION_MAP.put("pink_bed", () -> bed(DyeColor.PINK));
-        CONVERSION_MAP.put("gray_bed", () -> bed(DyeColor.GRAY));
-        CONVERSION_MAP.put("light_gray_bed", () -> bed(DyeColor.LIGHT_GRAY));
-        CONVERSION_MAP.put("cyan_bed", () -> bed(DyeColor.CYAN));
-        CONVERSION_MAP.put("purple_bed", () -> bed(DyeColor.PURPLE));
-        CONVERSION_MAP.put("blue_bed", () -> bed(DyeColor.BLUE));
-        CONVERSION_MAP.put("brown_bed", () -> bed(DyeColor.BROWN));
-        CONVERSION_MAP.put("green_bed", () -> bed(DyeColor.GREEN));
-        CONVERSION_MAP.put("red_bed", () -> bed(DyeColor.RED));
-        CONVERSION_MAP.put("black_bed", () -> bed(DyeColor.BLACK));
-        CONVERSION_MAP.put("white_banner", () -> banner(DyeColor.WHITE));
-        CONVERSION_MAP.put("orange_banner", () -> banner(DyeColor.ORANGE));
-        CONVERSION_MAP.put("magenta_banner", () -> banner(DyeColor.MAGENTA));
-        CONVERSION_MAP.put("light_blue_banner", () -> banner(DyeColor.LIGHT_BLUE));
-        CONVERSION_MAP.put("yellow_banner", () -> banner(DyeColor.YELLOW));
-        CONVERSION_MAP.put("lime_banner", () -> banner(DyeColor.LIME));
-        CONVERSION_MAP.put("pink_banner", () -> banner(DyeColor.PINK));
-        CONVERSION_MAP.put("gray_banner", () -> banner(DyeColor.GRAY));
-        CONVERSION_MAP.put("light_gray_banner", () -> banner(DyeColor.LIGHT_GRAY));
-        CONVERSION_MAP.put("cyan_banner", () -> banner(DyeColor.CYAN));
-        CONVERSION_MAP.put("purple_banner", () -> banner(DyeColor.PURPLE));
-        CONVERSION_MAP.put("blue_banner", () -> banner(DyeColor.BLUE));
-        CONVERSION_MAP.put("brown_banner", () -> banner(DyeColor.BROWN));
-        CONVERSION_MAP.put("green_banner", () -> banner(DyeColor.GREEN));
-        CONVERSION_MAP.put("red_banner", () -> banner(DyeColor.RED));
-        CONVERSION_MAP.put("black_banner", () -> banner(DyeColor.BLACK));
-        CONVERSION_MAP.put("white_wall_banner", () -> wallBanner(DyeColor.WHITE, WHITE_BANNER));
-        CONVERSION_MAP.put("orange_wall_banner", () -> wallBanner(DyeColor.ORANGE, ORANGE_BANNER));
-        CONVERSION_MAP.put("magenta_wall_banner", () -> wallBanner(DyeColor.MAGENTA, MAGENTA_BANNER));
-        CONVERSION_MAP.put("light_blue_wall_banner", () -> wallBanner(DyeColor.LIGHT_BLUE, LIGHT_BLUE_BANNER));
-        CONVERSION_MAP.put("yellow_wall_banner", () -> wallBanner(DyeColor.YELLOW, YELLOW_BANNER));
-        CONVERSION_MAP.put("lime_wall_banner", () -> wallBanner(DyeColor.LIME, LIME_BANNER));
-        CONVERSION_MAP.put("pink_wall_banner", () -> wallBanner(DyeColor.PINK, PINK_BANNER));
-        CONVERSION_MAP.put("gray_wall_banner", () -> wallBanner(DyeColor.GRAY, GRAY_BANNER));
-        CONVERSION_MAP.put("light_gray_wall_banner", () -> wallBanner(DyeColor.LIGHT_GRAY, LIGHT_GRAY_BANNER));
-        CONVERSION_MAP.put("cyan_wall_banner", () -> wallBanner(DyeColor.CYAN, CYAN_BANNER));
-        CONVERSION_MAP.put("purple_wall_banner", () -> wallBanner(DyeColor.PURPLE, PURPLE_BANNER));
-        CONVERSION_MAP.put("blue_wall_banner", () -> wallBanner(DyeColor.BLUE, BLUE_BANNER));
-        CONVERSION_MAP.put("brown_wall_banner", () -> wallBanner(DyeColor.BROWN, BROWN_BANNER));
-        CONVERSION_MAP.put("green_wall_banner", () -> wallBanner(DyeColor.GREEN, GREEN_BANNER));
-        CONVERSION_MAP.put("red_wall_banner", () -> wallBanner(DyeColor.RED, RED_BANNER));
-        CONVERSION_MAP.put("black_wall_banner", () -> wallBanner(DyeColor.BLACK, BLACK_BANNER));
-        CONVERSION_MAP.put("anvil", MinecraftConversionMap::anvil);
-        CONVERSION_MAP.put("chipped_anvil", MinecraftConversionMap::anvil);
-        CONVERSION_MAP.put("damaged_anvil", MinecraftConversionMap::anvil);
-        CONVERSION_MAP.put("bell", MinecraftConversionMap::bell);
-        CONVERSION_MAP.put("brewing_stand", MinecraftConversionMap::brewingStand);
-        CONVERSION_MAP.put("enchanting_table", MinecraftConversionMap::enchantmentTable);
-        CONVERSION_MAP.put("grindstone", MinecraftConversionMap::grindstone);
-        CONVERSION_MAP.put("hopper", MinecraftConversionMap::hopper);
-        CONVERSION_MAP.put("lectern", MinecraftConversionMap::lectern);
-        CONVERSION_MAP.put("nether_portal", MinecraftConversionMap::netherPortal);
-        CONVERSION_MAP.put("stonecutter", MinecraftConversionMap::stonecutter);
-        CONVERSION_MAP.put("oak_door", () -> door(BlockSetType.OAK));
-        CONVERSION_MAP.put("iron_door", () -> door(BlockSetType.IRON));
-        CONVERSION_MAP.put("spruce_door", () -> door(BlockSetType.SPRUCE));
-        CONVERSION_MAP.put("birch_door", () -> door(BlockSetType.BIRCH));
-        CONVERSION_MAP.put("jungle_door", () -> door(BlockSetType.JUNGLE));
-        CONVERSION_MAP.put("acacia_door", () -> door(BlockSetType.ACACIA));
-        CONVERSION_MAP.put("cherry_door", () -> door(BlockSetType.CHERRY));
-        CONVERSION_MAP.put("dark_oak_door", () -> door(BlockSetType.DARK_OAK));
-        CONVERSION_MAP.put("mangrove_door", () -> door(BlockSetType.MANGROVE));
-        CONVERSION_MAP.put("bamboo_door", () -> door(BlockSetType.BAMBOO));
+    // public final Map<String, Supplier<? extends Block>> conversionMap = new LinkedHashMap<>();
+
+    public MinecraftConversionMap() {
+        super(MoreWaterlogged.MINECRAFT_MOD_ID);
+        instance = this;
+    }
+
+    @Override
+    public void initialize() {
+        conversionMap.put("white_bed", (props) -> bed(DyeColor.WHITE));
+        conversionMap.put("orange_bed", (props) -> bed(DyeColor.ORANGE));
+        conversionMap.put("magenta_bed", (props) -> bed(DyeColor.MAGENTA));
+        conversionMap.put("light_blue_bed", (props) -> bed(DyeColor.LIGHT_BLUE));
+        conversionMap.put("yellow_bed", (props) -> bed(DyeColor.YELLOW));
+        conversionMap.put("lime_bed", (props) -> bed(DyeColor.LIME));
+        conversionMap.put("pink_bed", (props) -> bed(DyeColor.PINK));
+        conversionMap.put("gray_bed", (props) -> bed(DyeColor.GRAY));
+        conversionMap.put("light_gray_bed", (props) -> bed(DyeColor.LIGHT_GRAY));
+        conversionMap.put("cyan_bed", (props) -> bed(DyeColor.CYAN));
+        conversionMap.put("purple_bed", (props) -> bed(DyeColor.PURPLE));
+        conversionMap.put("blue_bed", (props) -> bed(DyeColor.BLUE));
+        conversionMap.put("brown_bed", (props) -> bed(DyeColor.BROWN));
+        conversionMap.put("green_bed", (props) -> bed(DyeColor.GREEN));
+        conversionMap.put("red_bed", (props) -> bed(DyeColor.RED));
+        conversionMap.put("black_bed", (props) -> bed(DyeColor.BLACK));
+        conversionMap.put("white_banner", (props) -> banner(DyeColor.WHITE));
+        conversionMap.put("orange_banner", (props) -> banner(DyeColor.ORANGE));
+        conversionMap.put("magenta_banner", (props) -> banner(DyeColor.MAGENTA));
+        conversionMap.put("light_blue_banner", (props) -> banner(DyeColor.LIGHT_BLUE));
+        conversionMap.put("yellow_banner", (props) -> banner(DyeColor.YELLOW));
+        conversionMap.put("lime_banner", (props) -> banner(DyeColor.LIME));
+        conversionMap.put("pink_banner", (props) -> banner(DyeColor.PINK));
+        conversionMap.put("gray_banner", (props) -> banner(DyeColor.GRAY));
+        conversionMap.put("light_gray_banner", (props) -> banner(DyeColor.LIGHT_GRAY));
+        conversionMap.put("cyan_banner", (props) -> banner(DyeColor.CYAN));
+        conversionMap.put("purple_banner", (props) -> banner(DyeColor.PURPLE));
+        conversionMap.put("blue_banner", (props) -> banner(DyeColor.BLUE));
+        conversionMap.put("brown_banner", (props) -> banner(DyeColor.BROWN));
+        conversionMap.put("green_banner", (props) -> banner(DyeColor.GREEN));
+        conversionMap.put("red_banner", (props) -> banner(DyeColor.RED));
+        conversionMap.put("black_banner", (props) -> banner(DyeColor.BLACK));
+        conversionMap.put("white_wall_banner", (props) -> wallBanner(DyeColor.WHITE, WHITE_BANNER));
+        conversionMap.put("orange_wall_banner", (props) -> wallBanner(DyeColor.ORANGE, ORANGE_BANNER));
+        conversionMap.put("magenta_wall_banner", (props) -> wallBanner(DyeColor.MAGENTA, MAGENTA_BANNER));
+        conversionMap.put("light_blue_wall_banner", (props) -> wallBanner(DyeColor.LIGHT_BLUE, LIGHT_BLUE_BANNER));
+        conversionMap.put("yellow_wall_banner", (props) -> wallBanner(DyeColor.YELLOW, YELLOW_BANNER));
+        conversionMap.put("lime_wall_banner", (props) -> wallBanner(DyeColor.LIME, LIME_BANNER));
+        conversionMap.put("pink_wall_banner", (props) -> wallBanner(DyeColor.PINK, PINK_BANNER));
+        conversionMap.put("gray_wall_banner", (props) -> wallBanner(DyeColor.GRAY, GRAY_BANNER));
+        conversionMap.put("light_gray_wall_banner", (props) -> wallBanner(DyeColor.LIGHT_GRAY, LIGHT_GRAY_BANNER));
+        conversionMap.put("cyan_wall_banner", (props) -> wallBanner(DyeColor.CYAN, CYAN_BANNER));
+        conversionMap.put("purple_wall_banner", (props) -> wallBanner(DyeColor.PURPLE, PURPLE_BANNER));
+        conversionMap.put("blue_wall_banner", (props) -> wallBanner(DyeColor.BLUE, BLUE_BANNER));
+        conversionMap.put("brown_wall_banner", (props) -> wallBanner(DyeColor.BROWN, BROWN_BANNER));
+        conversionMap.put("green_wall_banner", (props) -> wallBanner(DyeColor.GREEN, GREEN_BANNER));
+        conversionMap.put("red_wall_banner", (props) -> wallBanner(DyeColor.RED, RED_BANNER));
+        conversionMap.put("black_wall_banner", (props) -> wallBanner(DyeColor.BLACK, BLACK_BANNER));
+        conversionMap.put("anvil", (props) -> anvil());
+        conversionMap.put("chipped_anvil", (props) -> anvil());
+        conversionMap.put("damaged_anvil", (props) -> anvil());
+        conversionMap.put("bell", (props) -> bell());
+        conversionMap.put("brewing_stand", (props) -> brewingStand());
+        conversionMap.put("enchanting_table", (props) -> enchantmentTable());
+        conversionMap.put("grindstone", (props) -> grindstone());
+        conversionMap.put("hopper", (props) -> hopper());
+        conversionMap.put("lectern", (props) -> lectern());
+        conversionMap.put("jukebox", (props) -> jukebox());
+        conversionMap.put("nether_portal", (props) -> netherPortal());
+        conversionMap.put("stonecutter", (props) -> stonecutter());
+        conversionMap.put("oak_door", (props) -> door(BlockSetType.OAK));
+        conversionMap.put("iron_door", (props) -> door(BlockSetType.IRON));
+        conversionMap.put("spruce_door", (props) -> door(BlockSetType.SPRUCE));
+        conversionMap.put("birch_door", (props) -> door(BlockSetType.BIRCH));
+        conversionMap.put("jungle_door", (props) -> door(BlockSetType.JUNGLE));
+        conversionMap.put("acacia_door", (props) -> door(BlockSetType.ACACIA));
+        conversionMap.put("cherry_door", (props) -> door(BlockSetType.CHERRY));
+        conversionMap.put("dark_oak_door", (props) -> door(BlockSetType.DARK_OAK));
+        conversionMap.put("mangrove_door", (props) -> door(BlockSetType.MANGROVE));
+        conversionMap.put("bamboo_door", (props) -> door(BlockSetType.BAMBOO));
 
         applyCompatibility();
 
-        if (!CONFIG_MAP.containsKey(MOD_ID)) {
-            CONFIG_MAP.put(MOD_ID, new LinkedHashMap<>());
-        }
-        for (String key : CONVERSION_MAP.keySet()) {
-            if (!CONFIG_MAP.get(MOD_ID).containsKey(key)) {
-                MARKED_FOR_CONFIG_CREATION.set(true);
-                CONFIG_MAP.get(MOD_ID).put(key, true);
-            }
-        }
+        postInitialize(conversionMap.keySet());
 
-        HAS_INITIALIZED_LIST.add(true);
+        hasInitialized = true;
     }
 
-    public static Block convert(String key, Block block) {
-        if (CONVERSION_MAP.containsKey(key)) {
-            log(key, MOD_ID);
-            if (isKeyEnabled(key, MOD_ID)) {
+    public Block convert(String key, Block block) {
+        if (conversionMap.containsKey(key)) {
+            log(key);
+            if (isKeyEnabled(key)) {
                 Registry.register(BuiltInRegistries.BLOCK, key + "_deprecated", block);
-                return CONVERSION_MAP.get(key).get();
+                return (Block) conversionMap.get(key).apply(null);
             }
         }
         return block;
     }
 
-    public static void applyCompatibility() {
+    public void applyCompatibility() {
         List<String> modList = LoadingModList.get().getMods().stream().map(ModInfo::getModId).toList();
         if (modList.contains("apotheosis")) {
             LOGGER.debug("Apply compatible registry with \"apotheosis\"");
-            CONVERSION_MAP.replace("anvil", ApothAnvilBlock::new);
-            CONVERSION_MAP.replace("chipped_anvil", ApothAnvilBlock::new);
-            CONVERSION_MAP.replace("damaged_anvil", ApothAnvilBlock::new);
+            conversionMap.replace("anvil", (props) -> new ApothAnvilBlock());
+            conversionMap.replace("chipped_anvil", (props) -> new ApothAnvilBlock());
+            conversionMap.replace("damaged_anvil", (props) -> new ApothAnvilBlock());
 
-            CONVERSION_MAP.replace("enchanting_table", ApothEnchantBlock::new);
+            conversionMap.replace("enchanting_table", (props) -> new ApothEnchantBlock());
         }
     }
 
-    private static BedBlock bed(DyeColor pColor) {
-        return new BedBlock(pColor, BlockBehaviour.Properties.of().mapColor((p_284863_) -> {
-            return p_284863_.getValue(BedBlock.PART) == BedPart.FOOT ? pColor.getMapColor() : MapColor.WOOL;
-        }).sound(SoundType.WOOD).strength(0.2F).noOcclusion().ignitedByLava().pushReaction(PushReaction.DESTROY));
+    private BedBlock bed(DyeColor pColor) {
+        return new BedBlock(pColor, BlockBehaviour.Properties.of()
+                .mapColor((p_284863_) -> p_284863_.getValue(BedBlock.PART) == BedPart.FOOT ? pColor.getMapColor() : MapColor.WOOL)
+                .sound(SoundType.WOOD).strength(0.2F).noOcclusion().ignitedByLava().pushReaction(PushReaction.DESTROY));
     }
 
-    private static BannerBlock banner(DyeColor pColor) {
+    private BannerBlock banner(DyeColor pColor) {
         return new BannerBlock(pColor, BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).forceSolidOn()
                 .instrument(NoteBlockInstrument.BASS).noCollission().strength(1.0F)
                 .sound(SoundType.WOOD).ignitedByLava());
     }
 
-    private static WallBannerBlock wallBanner(DyeColor pColor, Block standingBanner) {
+    @SuppressWarnings("deprecated")
+    private WallBannerBlock wallBanner(DyeColor pColor, Block standingBanner) {
         return new WallBannerBlock(pColor, BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).forceSolidOn()
                 .instrument(NoteBlockInstrument.BASS).noCollission().strength(1.0F).sound(SoundType.WOOD)
                 .dropsLike(standingBanner).ignitedByLava());
     }
 
-    private static AnvilBlock anvil() {
+    private AnvilBlock anvil() {
         return new AnvilBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL)
                 .requiresCorrectToolForDrops().strength(5.0F, 1200.0F)
                 .sound(SoundType.ANVIL).pushReaction(PushReaction.BLOCK));
     }
 
-    private static BellBlock bell() {
+    private BellBlock bell() {
         return new BellBlock(BlockBehaviour.Properties.of().mapColor(MapColor.GOLD).forceSolidOn()
                 .requiresCorrectToolForDrops().strength(5.0F)
                 .sound(SoundType.ANVIL).pushReaction(PushReaction.DESTROY));
     }
 
-    private static BrewingStandBlock brewingStand() {
+    private BrewingStandBlock brewingStand() {
         return new BrewingStandBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).requiresCorrectToolForDrops().strength(0.5F)
-                .lightLevel((p_50872_) -> {
-                    return 1;
-                }).noOcclusion());
+                .lightLevel((p_50872_) -> 1).noOcclusion());
     }
 
-    private static EnchantmentTableBlock enchantmentTable() {
+    private EnchantmentTableBlock enchantmentTable() {
         return new EnchantmentTableBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_RED).instrument(NoteBlockInstrument.BASEDRUM)
-                .requiresCorrectToolForDrops().lightLevel((p_50874_) -> {
-                    return 7;
-                }).strength(5.0F, 1200.0F));
+                .requiresCorrectToolForDrops().lightLevel((p_50874_) -> 7).strength(5.0F, 1200.0F));
     }
 
-    private static GrindstoneBlock grindstone() {
+    private GrindstoneBlock grindstone() {
         return new GrindstoneBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).requiresCorrectToolForDrops().strength(2.0F, 6.0F)
                 .sound(SoundType.STONE).pushReaction(PushReaction.BLOCK));
     }
 
-    private static HopperBlock hopper() {
+    private HopperBlock hopper() {
         return new HopperBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).requiresCorrectToolForDrops().strength(3.0F, 4.8F)
                 .sound(SoundType.METAL).noOcclusion());
     }
 
-    private static LecternBlock lectern() {
+    private LecternBlock lectern() {
         return new LecternBlock(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).instrument(NoteBlockInstrument.BASS).strength(2.5F)
                 .sound(SoundType.WOOD).ignitedByLava());
     }
 
-    private static NetherPortalBlock netherPortal() {
+    private NetherPortalBlock netherPortal() {
         return new NetherPortalBlock(BlockBehaviour.Properties.of().noCollission().randomTicks().strength(-1.0F).sound(SoundType.GLASS)
-                .lightLevel((p_152605_) -> {
-                    return 11;
-                }).pushReaction(PushReaction.BLOCK));
+                .lightLevel((p_152605_) -> 11).pushReaction(PushReaction.BLOCK));
     }
 
-    private static StonecutterBlock stonecutter() {
+    private StonecutterBlock stonecutter() {
         return new StonecutterBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM)
                 .requiresCorrectToolForDrops().strength(3.5F));
     }
 
-    private static DoorBlock door(BlockSetType type) {
+    private DoorBlock door(BlockSetType type) {
         if (type == BlockSetType.IRON) {
             return new DoorBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL)
                     .requiresCorrectToolForDrops().strength(5.0F).noOcclusion()
                     .pushReaction(PushReaction.DESTROY), type);
-        } else if (MAP_MATERIAL.containsKey(type)) {
-            return new DoorBlock(BlockBehaviour.Properties.of().mapColor(MAP_MATERIAL.get(type).get().defaultMapColor())
+        } else if (mapMaterial.containsKey(type)) {
+            return new DoorBlock(BlockBehaviour.Properties.of().mapColor(mapMaterial.get(type).get().defaultMapColor())
                     .instrument(NoteBlockInstrument.BASS).strength(3.0F).noOcclusion().ignitedByLava()
                     .pushReaction(PushReaction.DESTROY), type);
         }
         throw new RuntimeException("Mismatching door type");
+    }
+
+    private JukeboxBlock jukebox() {
+        return new JukeboxBlock(BlockBehaviour.Properties.of().mapColor(MapColor.DIRT).instrument(NoteBlockInstrument.BASS)
+                .strength(2.0F, 6.0F).ignitedByLava());
     }
 }

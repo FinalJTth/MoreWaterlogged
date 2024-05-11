@@ -1,4 +1,4 @@
-package com.zenesta.morewaterlogged.mixin;
+package com.zenesta.morewaterlogged.mixin.vanilla;
 
 import com.zenesta.morewaterlogged.common.map.MinecraftConversionMap;
 import net.minecraft.core.Registry;
@@ -16,8 +16,8 @@ public class MixinBlocks {
 
     @Inject(method = "<clinit>", at = @At("HEAD"))
     private static void constructorHead(CallbackInfo ci) {
-        if (!MinecraftConversionMap.hasInitialized)
-            MinecraftConversionMap.initialize();
+        if (MinecraftConversionMap.instance == null)
+            new MinecraftConversionMap();
     }
 
     /**
@@ -26,6 +26,6 @@ public class MixinBlocks {
      */
     @Overwrite
     public static Block register(String pKey, Block pBlock) {
-        return Registry.register(BuiltInRegistries.BLOCK, pKey, MinecraftConversionMap.convert(pKey, pBlock));
+        return Registry.register(BuiltInRegistries.BLOCK, pKey, MinecraftConversionMap.instance.convert(pKey, pBlock));
     }
 }
